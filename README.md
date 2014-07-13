@@ -76,7 +76,7 @@ This event fires when the stream failed to detect the image size. It passes an `
 
 ## Examples
 
-These examples shows that you don't need to read the image entirely if you just want to detect its width and height.
+These examples show that you don't need to read the image entirely if you just want to detect its width and height.
 
 ### Read from local file system
 
