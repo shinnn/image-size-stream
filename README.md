@@ -15,13 +15,14 @@ Detect the width and height of an image in a [stream](http://nodejs.org/api/stre
 //       +-----------+
 //           400px 
 
-var imageSizeStream = createImageSizeStream();
-imageSizeStream.on('size', function(dimensions) {
+var imageSizeStream = createImageSizeStream()
+.on('size', function(dimensions) {
   console.log(dimensions);
-  fsReadStream.destroy();
+  stream.destroy();
 });
 
-fsReadStream.pipe(imageSizeStream);
+var stream = fs.createReadStream('path/to/foo.jpg')
+.pipe(imageSizeStream);
 
 //=> yields: {width: 400, height: 300}
 ```
@@ -81,7 +82,7 @@ These examples shows that you don't need to read the image entirely if you just 
 
 ```javascript
 var fs = require('fs');
-var fileStream = fs.createReadStream('path/to/foo.jpg');
+var fileStream = fs.createReadStream('path/to/image.jpg');
 
 var createImageSizeStream = require('image-size-stream');
 var size = createImageSizeStream();
