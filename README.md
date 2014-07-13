@@ -5,7 +5,7 @@
 [![Dependency Status](https://david-dm.org/shinnn/image-size-stream.svg)](https://david-dm.org/shinnn/image-size-stream)
 [![devDependency Status](https://david-dm.org/shinnn/image-size-stream/dev-status.svg)](https://david-dm.org/shinnn/image-size-stream#info=devDependencies)
 
-Detect the width and height of an image in a stream, using [image-size](https://github.com/netroy/image-size)
+Detect the width and height of an image in a [stream](http://nodejs.org/api/stream.html), using [image-size](https://github.com/netroy/image-size)
 
 ```javascript
 //       +-----------+
@@ -98,8 +98,6 @@ fileStream.pipe(size);
 ```
 
 If you want to stop reading the rest of the image file at `size` event, call [fs.ReadStream.destroy()](https://github.com/joyent/node/blob/03e9f84933fe610b04b107cf1f83d17485e8906e/lib/fs.js#L1578-L1585) or [fs.ReadStream.close()](https://github.com/joyent/node/blob/03e9f84933fe610b04b107cf1f83d17485e8906e/lib/fs.js#L1588-L1611).
-
-When the `size` event fired, call 
 
 ### Read via HTTP
 
