@@ -1,6 +1,6 @@
 {
   "name": "image-size-stream",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Detect the width and height of an image in a stream",
   "licenses": [
     {
