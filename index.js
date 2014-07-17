@@ -31,7 +31,7 @@ module.exports = function createImageSizeStream() {
       }
     }
     this.queue(chunk);
-  }, function end(next) {
+  }, function end() {
     if (!dimensions) {
       this.emit('error', detectionError);
       return;
