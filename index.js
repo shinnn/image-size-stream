@@ -32,6 +32,10 @@ module.exports = function createImageSizeStream() {
     }
     this.queue(chunk);
   }, function end() {
+    if (buffer.length === 0) {
+      this.emit('error', new Error('No bytes received.'));
+      return;
+    }
     if (!dimensions) {
       this.emit('error', detectionError);
       return;

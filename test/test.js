@@ -38,6 +38,15 @@ describe('imageSizeStream', () => {
     }));
   });
 
+  it('should pass an error when it doesn\'t receive any bytes', done => {
+    let stream = fs.createReadStream('test/fixture-empty.txt');
+    stream.pipe(imageSizeStream().on('error', err => {
+      stream.destroy();
+      assert.throws(() => assert.ifError(err), 'No bytes received.');
+      done();
+    }));
+  });
+
   it('should emit an error event before reading the image completely.', done => {
     let buffer = new Buffer([]);
     let detected = false;
