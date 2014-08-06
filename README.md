@@ -90,7 +90,7 @@ size
 .on('size', function(dimensions) {
   console.log(dimensions);
   fileStream.destroy();
-});
+})
 .on('error', function(err) {
   throw err;
 });
@@ -111,7 +111,7 @@ size
 .on('size', function(dimensions) {
   console.log(dimensions);
   request.abort();
-});
+})
 .on('error', function(err) {
   throw err;
 });
