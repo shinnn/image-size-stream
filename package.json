@@ -19,6 +19,10 @@
     "pretest": "${npm_package_scripts_lint} & rimraf tmp && ${npm_package_scripts_build}",
     "test": "mocha tmp/test-es5.js --reporter spec --timeout 5000"
   },
+  "files": [
+    "index.js",
+    "LICENSE"
+  ],
   "keywords": [
     "image",
     "size",
