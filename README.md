@@ -24,7 +24,7 @@ var imageSizeStream = createImageSizeStream()
 var stream = fs.createReadStream('path/to/foo.jpg')
 .pipe(imageSizeStream);
 
-//=> yields: {width: 400, height: 300}
+// yields: {width: 400, height: 300}
 ```
 
 ## Installation
@@ -98,7 +98,7 @@ size
 fileStream.pipe(size);
 ```
 
-If you want to stop reading the rest of the image file at `size` event, call [fs.ReadStream.destroy()](https://github.com/joyent/node/blob/03e9f84933fe610b04b107cf1f83d17485e8906e/lib/fs.js#L1578-L1585) or [fs.ReadStream.close()](https://github.com/joyent/node/blob/03e9f84933fe610b04b107cf1f83d17485e8906e/lib/fs.js#L1588-L1611).
+If you want to stop reading the rest of the image file at `size` event, call [fs.ReadStream.destroy()](https://github.com/joyent/node/blob/912b5e05811fd24f09f9d65200a1561a4482f166/lib/fs.js#L1587-L1594) or [fs.ReadStream.close()](https://github.com/joyent/node/blob/912b5e05811fd24f09f9d65200a1561a4482f166/lib/fs.js#L1587-L1594).
 
 ### Read via HTTP
 
