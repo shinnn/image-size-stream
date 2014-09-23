@@ -127,4 +127,4 @@ If you want to stop loading the rest of the image file at `size` event, call [re
 
 Copyright (c) 2014 [Shinnosuke Watanabe](https://github.com/shinnn)
 
-Licensed under [the MIT LIcense](./LICENSE).
+Licensed under [the MIT License](./LICENSE).
