@@ -1,11 +1,12 @@
 # image-size-stream 
 
-[![NPM version](https://badge.fury.io/js/image-size-stream.svg)](http://badge.fury.io/js/image-size-stream)
-[![Build Status](https://travis-ci.org/shinnn/image-size-stream.svg?branch=master)](https://travis-ci.org/shinnn/image-size-stream)
+[![Build Status](https://travis-ci.org/shinnn/image-size-stream.svg)](https://travis-ci.org/shinnn/image-size-stream)
+[![Build status](https://ci.appveyor.com/api/projects/status/y05fwx2rwnf1kdh6?svg=true)](https://ci.appveyor.com/project/ShinnosukeWatanabe/image-size-stream)
+[![Coverage Status](https://img.shields.io/coveralls/shinnn/image-size-stream.svg?style=flat)](https://coveralls.io/r/shinnn/image-size-stream)
 [![Dependency Status](https://david-dm.org/shinnn/image-size-stream.svg)](https://david-dm.org/shinnn/image-size-stream)
 [![devDependency Status](https://david-dm.org/shinnn/image-size-stream/dev-status.svg)](https://david-dm.org/shinnn/image-size-stream#info=devDependencies)
 
-Detect the width and height of an image in a [stream](http://nodejs.org/api/stream.html), using [image-size](https://github.com/netroy/image-size)
+Detect the width and height of images in a [stream](http://nodejs.org/api/stream.html)
 
 ```javascript
 //       +-----------+
@@ -17,19 +18,19 @@ Detect the width and height of an image in a [stream](http://nodejs.org/api/stre
 
 var imageSizeStream = createImageSizeStream()
 .on('size', function(dimensions) {
-  console.log(dimensions);
+  dimensions; //=> {width: 400, height: 300, type: 'jpg'}
   stream.destroy();
 });
 
 var stream = fs.createReadStream('path/to/foo.jpg')
 .pipe(imageSizeStream);
-
-// yields: {width: 400, height: 300}
 ```
 
 ## Installation
 
-[Install with npm](https://www.npmjs.org/doc/cli/npm-install.html). (Make sure you have installed [Node](http://nodejs.org/))
+[![NPM version](https://img.shields.io/npm/v/image-size-stream.svg?style=flat)](https://www.npmjs.com/package/image-size-stream)
+
+[Use npm.](https://docs.npmjs.com/cli/install)
 
 ```
 npm install --save image-size-stream
@@ -42,43 +43,57 @@ npm install --save image-size-stream
 * [JPEG](http://wikipedia.org/wiki/JPEG)
 * [PNG](http://wikipedia.org/wiki/Portable_Network_Graphics)
 * [PSD](http://wikipedia.org/wiki/Adobe_Photoshop#File_format)
+* [SVG](http://wikipedia.org/wiki/Scalable_Vector_Graphics)
 * [TIFF](http://wikipedia.org/wiki/Tagged_Image_File_Format)
 * [WebP](http://wikipedia.org/wiki/WebP)
-
+ 
 ## API
 
-### createImageSizeStream()
+### createImageSizeStream([*option*])
 
-Return: `Stream`
+*option*: `Object`
+Return: `Object` ([`stream.Transform`](http://nodejs.org/api/stream.html#stream_class_stream_transform))
 
-The stream tries to detect the image size and emits `size` or `error` event.
+The stream tries to detect the image size and emits [`size`](#size) or [`error`](#error) event.
 
 ```javascript
 var createImageSizeStream = require('image-size-stream');
 var imageSizeStream = createImageSizeStream();
 ```
 
+#### option.limit
+
+Type: `Number`  
+Default: `128 * 1024`
+
+Sets the maximum bytes the stream can reads. It emits an error if it cannot detect the image size even though it have reached the limit.
+
+Usually the default value meets the requirements.
+
 ### Events
 
 #### `size`
 
-This event fires when the stream detect the image size. It passes an `Object` of the form `{width: [Number], height: [Number]}` to the callback function.
+This event fires when the stream detect the image size. It passes an object in the form `{width: [Number], height: [Number], type: [String]}` to the callback function.
+
+`type` will be one of the following strings: `bmp` `gif` `jpg` `png` `psd` `svg` `tiff` `webp`
 
 ```javascript
 imageSizeStream.on('size', function(dimensions) {
   console.log('size: ' + dimensions.width + ' x ' + dimensions.height);
+  console.log('image format: ' + dimensions.type);
 });
 ```
 
 #### `error`
 
-This event fires when the stream failed to detect the image size. It passes an `TypeError` to the callback function.
+This event fires when the stream failed to detect the image size. It passes an error to the callback function.
 
 ## Examples
 
 These examples show that you don't need to read the image entirely if you just want to detect its width and height.
 
-### Read from local file system
+### Read data from local file system
 
 ```javascript
 var fs = require('fs');
@@ -98,9 +113,9 @@ size
 fileStream.pipe(size);
 ```
 
-If you want to stop reading the rest of the image file at `size` event, call [fs.ReadStream.destroy()](https://github.com/joyent/node/blob/912b5e05811fd24f09f9d65200a1561a4482f166/lib/fs.js#L1587-L1594) or [fs.ReadStream.close()](https://github.com/joyent/node/blob/912b5e05811fd24f09f9d65200a1561a4482f166/lib/fs.js#L1587-L1594).
+If you want to stop reading the rest of the image file at `size` event, call [fs.ReadStream.destroy()](https://github.com/joyent/node/blob/a5778cdf01425ae39cea80b62f9ec6740aec724a/lib/fs.js#L1587-L1594) or [fs.ReadStream.close()](https://github.com/joyent/node/blob/a5778cdf01425ae39cea80b62f9ec6740aec724a/lib/fs.js#L1597-L1620).
 
-### Read via HTTP
+### Read data via HTTP
 
 ```javascript
 var http = require('http');
