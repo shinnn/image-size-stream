@@ -8,21 +8,17 @@
       "url": "https://github.com/shinnn/image-size-stream/blob/master/LICENSE"
     }
   ],
-  "repository": "shinnn/image-size-stream",
-  "author": {
-    "name": "Shinnosuke Watanabe",
-    "url": "https://github.com/shinnn"
-  },
-  "scripts": {
-    "lint": "jshint *.js test/*.js --reporter node_modules/jshint-stylish/stylish",
-    "build": "traceur --experimental --script test/test.js --out tmp/test-es5.js",
-    "pretest": "${npm_package_scripts_lint} & rimraf tmp && ${npm_package_scripts_build}",
-    "test": "mocha tmp/test-es5.js --reporter spec --timeout 5000"
-  },
   "files": [
     "index.js",
     "LICENSE"
   ],
+  "scripts": {
+    "pretest": "jscs *.js test/test.js && eslint *.js test/test.js",
+    "test": "_mocha --timeout 5000",
+    "test-dot": "_mocha --reporter dot --timeout 5000",
+    "coverage": "istanbul cover --no-default-excludes -x=node_modules/** _mocha -- -t 5000",
+    "coveralls": "${npm_package_scripts_coverage} && istanbul-coveralls"
+  },
   "keywords": [
     "image",
     "size",
@@ -45,13 +41,17 @@
     "through": "^2.3.4"
   },
   "devDependencies": {
-    "concat-stream": "^1.4.6",
-    "jshint": "^2.5.3",
-    "jshint-stylish": "^0.4.0",
-    "mocha": "^1.21.4",
-    "require-main": "0.1.1",
-    "rimraf": "^2.2.8",
-    "run-parallel": "^1.0.0",
-    "traceur": "0.0.58"
+    "eslint": "^0.10.2",
+    "istanbul": "^0.3.5",
+    "istanbul-coveralls": "^1.0.1",
+    "jscs": "^1.9.0",
+    "mocha": "^2.1.0",
+    "run-parallel": "^1.0.0"
+  },
+  "jscsConfig": {
+    "preset": "google",
+    "maximumLineLength": 98,
+    "requireBlocksOnNewline": true,
+    "validateLineBreaks": "LF"
   }
 }

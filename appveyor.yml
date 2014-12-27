@@ -1,0 +1,24 @@
+init:
+  - git config --global core.autocrlf input
+
+shallow_clone: true
+
+version: '{build}'
+
+environment:
+  matrix:
+    - nodejs_version: '0.10'
+    - nodejs_version: '0.11'
+
+install:
+  - ps: Install-Product node $env:nodejs_version
+  - npm install
+
+build: off
+
+test_script:
+  - ps: 'npm run-script test-dot #PowerShell'
+  - cmd: npm run-script test-dot
+
+cache:
+  - node_modules

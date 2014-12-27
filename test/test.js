@@ -4,96 +4,133 @@ var assert = require('assert');
 var fs = require('fs');
 var http = require('http');
 
-var concatStream = require('concat-stream');
 var parallel = require('run-parallel');
+var imageSizeStream = require('..');
 
-var imageSizeStream = require('require-main')();
-
-describe('imageSizeStream', () => {
-  it('should detect the dimensions of an image.', done => {
-    let stream = fs.createReadStream('test/fixture.png');
-    stream.pipe(imageSizeStream().on('size', dimensions => {
-      stream.destroy();
-      assert.deepEqual(dimensions, {width: 673, height: 506});
-      done();
-    }));
+describe('imageSizeStream', function() {
+  it('should have a function name.', function() {
+    assert.equal(imageSizeStream.name, 'createImageSizeStream');
   });
 
-  it('should detect the dimensions of an image via http.', done => {
-    let req = http.get('http://placekitten.com/6000/4000', res => {
-      res.pipe(imageSizeStream().on('size', dimensions => {
+  it('should detect the dimensions of an image.', function(done) {
+    var req = http.get('http://placekitten.com/6000/4000', function(res) {
+      res.pipe(imageSizeStream().on('size', function(dimensions) {
         req.abort();
-        assert.deepEqual(dimensions, {width: 6000, height: 4000});
+        assert.deepEqual(dimensions, {
+          width: 6000,
+          height: 4000,
+          type: 'jpg'
+        });
         done();
       }));
     });
   });
 
-  it('should pass an type error when the image is corrupted.', done => {
-    let stream = fs.createReadStream('test/fixture-broken.jpg');
-    stream.pipe(imageSizeStream().on('error', err => {
-      stream.destroy();
-      assert.throws(() => assert.ifError(err), TypeError);
-      done();
-    }));
-  });
+  it('should emit `size` event before reading the image completely.', function(done) {
+    var detected = false;
+    var readLength = 0;
+    var detectLength = 0;
 
-  it('should pass an error when it doesn\'t receive any bytes', done => {
-    let stream = fs.createReadStream('test/fixture-empty.txt');
-    stream.pipe(imageSizeStream().on('error', err => {
-      stream.destroy();
-      assert.throws(() => assert.ifError(err), 'No bytes received.');
-      done();
-    }));
-  });
-
-  it('should emit an error event before reading the image completely.', done => {
-    let buffer = new Buffer([]);
-    let detected = false;
-
-    let imageSize = imageSizeStream()
-    .on('data', chunk => {
+    var imageSize = imageSizeStream()
+    .on('data', function(chunk) {
       if (!detected) {
-        buffer = Buffer.concat([buffer, chunk]);
+        detectLength += chunk.length;
       }
     })
-    .on('size', () => detected = true);
-
-    let concat = concatStream({encoding: 'buffer'}, data => {
-      assert(data.length > buffer.length);
-      done();
+    .on('size', function() {
+      detected = true;
     });
-    
-    fs.createReadStream('test/fixture-another.webp', {highWaterMark: 1})
-    .pipe(imageSize).pipe(concat);
+
+    fs.createReadStream('test/fixture.webp', {highWaterMark: 1})
+    .on('data', function(data) {
+      readLength += data.length;
+    })
+    .on('end', function() {
+      assert(detectLength < readLength);
+      done();
+    })
+    .pipe(imageSize);
   });
 
-  it('should run concurrently when more than one stream is created.', done => {
-    let stream = fs.createReadStream('test/fixture.png');
-
+  it('should be able to create multiple streams at the same time.', function(done) {
     parallel([
-      cb => {
-        stream.pipe(imageSizeStream().on('size', dimensions => {
+      function(cb) {
+        var stream = fs.createReadStream('test/fixture-another.png');
+        stream.pipe(imageSizeStream().on('size', function(dimensions) {
           stream.destroy();
           cb(null, dimensions);
-        }).on('error', err => cb(err)));
+        }).on('error', cb));
       },
-      cb => {
-        let req = http.get('http://placekitten.com/4000/6000', res => {
-          res.pipe(imageSizeStream().on('size', dimensions => {
+      function(cb) {
+        var req = http.get('http://placekitten.com/4000/6000', function(res) {
+          res.pipe(imageSizeStream().on('size', function(dimensions) {
             req.abort();
             cb(null, dimensions);
-          }).on('error', err => cb(err)));
+          }).on('error', cb));
         });
       }
-    ], (err, results) => {
-      if (err) {
-        done(err);
-        return;
-      }
-      assert.deepEqual(results[0], {width: 673, height: 506});
-      assert.deepEqual(results[1], {width: 4000, height: 6000});
+    ], function(err, results) {
+      assert.strictEqual(err, null);
+      assert.deepEqual(results, [
+        {
+          width: 673,
+          height: 506,
+          type: 'png'
+        },
+        {
+          width: 4000,
+          height: 6000,
+           type: 'jpg'
+        }
+      ]);
       done();
     });
+  });
+
+  it('should emit a type error when the data is not an image.', function(done) {
+    imageSizeStream()
+    .on('error', function(err) {
+      assert.equal(err.name, 'TypeError');
+      assert.equal(err.message, 'unsupported file type');
+      done();
+    })
+    .end(' ');
+  });
+
+  it('should pass a type error when the image is corrupted.', function(done) {
+    var stream = fs.createReadStream('test/fixture-broken.jpg');
+    stream.pipe(imageSizeStream().on('error', function(err) {
+      stream.destroy();
+      assert.equal(err.name, 'TypeError');
+      assert.ok(/Invalid JPG/.test(err.message));
+      done();
+    }));
+  });
+
+  it('should pass an error when it receives no bytes', function(done) {
+    imageSizeStream()
+    .on('error', function(err) {
+      assert.equal(err.name, 'Error');
+      assert.equal(err.message, 'No bytes received.');
+      done();
+    })
+    .end('');
+  });
+
+  it('should use `limit` option to specify maximum file size.', function(done) {
+    fs.createReadStream(__filename)
+    .pipe(imageSizeStream({limit: 1})
+    .on('error', function(err) {
+      assert.equal(err.name, 'Error');
+      assert.equal(err.message, 'Reached the limit before detecting image type.');
+      done();
+    }));
+  });
+
+  it('should throw a type error when `limit` option is not a number.', function() {
+    assert.throws(
+      imageSizeStream.bind(null, {limit: 'one hundred'}),
+      /TypeError.*one hundred .*must be a number/
+    );
   });
 });
