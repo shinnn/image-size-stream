@@ -66,7 +66,7 @@ var imageSizeStream = createImageSizeStream();
 Type: `Number`  
 Default: `128 * 1024`
 
-Sets the maximum bytes the stream can reads. It emits an error if it cannot detect the image size even though it have reached the limit.
+The maximum bytes the stream can reads. It emits an error if it cannot detect the image size though it has reached the limit.
 
 Usually the default value meets the requirements.
 
