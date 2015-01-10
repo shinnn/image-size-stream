@@ -1,10 +1,11 @@
 # image-size-stream 
 
+[![NPM version](https://img.shields.io/npm/v/image-size-stream.svg?style=flat)](https://www.npmjs.com/package/image-size-stream)
 [![Build Status](https://travis-ci.org/shinnn/image-size-stream.svg)](https://travis-ci.org/shinnn/image-size-stream)
 [![Build status](https://ci.appveyor.com/api/projects/status/y05fwx2rwnf1kdh6?svg=true)](https://ci.appveyor.com/project/ShinnosukeWatanabe/image-size-stream)
 [![Coverage Status](https://img.shields.io/coveralls/shinnn/image-size-stream.svg?style=flat)](https://coveralls.io/r/shinnn/image-size-stream)
-[![Dependency Status](https://david-dm.org/shinnn/image-size-stream.svg)](https://david-dm.org/shinnn/image-size-stream)
-[![devDependency Status](https://david-dm.org/shinnn/image-size-stream/dev-status.svg)](https://david-dm.org/shinnn/image-size-stream#info=devDependencies)
+[![Dependency Status](https://img.shields.io/david/shinnn/image-size-stream.svg?style=flat&label=deps)](https://david-dm.org/shinnn/image-size-stream)
+[![devDependency Status](https://img.shields.io/david/dev/shinnn/image-size-stream.svg?style=flat&label=devDeps)](https://david-dm.org/shinnn/image-size-stream#info=devDependencies)
 
 Detect the width and height of images in a [stream](http://nodejs.org/api/stream.html)
 
@@ -27,8 +28,6 @@ var stream = fs.createReadStream('path/to/foo.jpg')
 ```
 
 ## Installation
-
-[![NPM version](https://img.shields.io/npm/v/image-size-stream.svg?style=flat)](https://www.npmjs.com/package/image-size-stream)
 
 [Use npm.](https://docs.npmjs.com/cli/install)
 
