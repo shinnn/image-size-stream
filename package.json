@@ -19,9 +19,9 @@
   ],
   "scripts": {
     "pretest": "jscs *.js test/test.js && eslint *.js test/test.js",
-    "test": "_mocha --timeout 5000",
-    "test-dot": "_mocha --reporter dot --timeout 5000",
-    "coverage": "istanbul cover --no-default-excludes -x=node_modules/** _mocha -- -t 5000",
+    "test": "_mocha --timeout 7500",
+    "test-dot": "_mocha --reporter dot --timeout 7500",
+    "coverage": "istanbul cover --no-default-excludes -x=node_modules/** _mocha -- -t 7500",
     "coveralls": "${npm_package_scripts_coverage} && istanbul-coveralls"
   },
   "keywords": [
