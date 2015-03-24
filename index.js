@@ -4,7 +4,7 @@
 */
 'use strict';
 
-var through = require('through2');
+var PassThrough = require('readable-stream').PassThrough;
 var tryit = require('tryit');
 var imageSize = require('image-size');
 
@@ -28,36 +28,35 @@ module.exports = function createImageSizeStream(option) {
   var dimensions;
   var detectionError;
 
-  return through(function detectImageSize(chunk, enc, cb) {
-    if (!dimensions) {
-      len += chunk.length;
-      buffer = Buffer.concat([buffer, chunk], len);
+  return new PassThrough()
+    .on('data', function detectImageSize(chunk) {
+      if (!dimensions) {
+        len += chunk.length;
+        buffer = Buffer.concat([buffer, chunk], len);
 
-      tryit(function() {
-        dimensions = imageSize(buffer);
-      }, function(err) {
-        detectionError = err;
-      });
+        tryit(function() {
+          dimensions = imageSize(buffer);
+        }, function(err) {
+          detectionError = err;
+        });
 
-      if (dimensions) {
-        this.emit('size', dimensions);
-      } else if (buffer.length > option.limit) {
-        this.emit('error', new Error('Reached the limit before detecting image type.'));
+        if (dimensions) {
+          this.emit('size', dimensions);
+        } else if (len > option.limit) {
+          this.emit('error', new Error('Reached the limit before detecting image type.'));
+        }
       }
-    }
+    })
+    .on('finish', function flush() {
+      if (dimensions) {
+        return;
+      }
 
-    this.push(chunk);
-    cb();
-  }, function flush() {
-    if (dimensions) {
-      return;
-    }
+      if (buffer.length === 0) {
+        this.emit('error', new Error('No bytes received.'));
+        return;
+      }
 
-    if (buffer.length === 0) {
-      this.emit('error', new Error('No bytes received.'));
-      return;
-    }
-
-    this.emit('error', detectionError);
-  });
+      this.emit('error', detectionError);
+    });
 };

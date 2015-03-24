@@ -87,7 +87,7 @@ describe('imageSizeStream', function() {
     });
   });
 
-  it('should emit a type error when the data is not an image.', function(done) {
+  it('should emit a type error when it receives non-image data', function(done) {
     imageSizeStream()
     .on('error', function(err) {
       assert.equal(err.name, 'TypeError');
@@ -95,6 +95,23 @@ describe('imageSizeStream', function() {
       done();
     })
     .end(' ');
+  });
+
+  it('should emit a type error when it receives large non-image data', function(done) {
+    var stream = imageSizeStream()
+    .on('error', function(err) {
+      assert.equal(err.name, 'TypeError');
+      assert.equal(err.message, 'unsupported file type');
+      done();
+    });
+
+    var i = 9999;
+
+    while (i--) {
+      stream.write(new Buffer('   '));
+    }
+
+    stream.end(new Buffer('   '));
   });
 
   it('should pass a type error when the image is corrupted.', function(done) {

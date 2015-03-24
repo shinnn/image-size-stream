@@ -43,7 +43,7 @@
   ],
   "dependencies": {
     "image-size": "netroy/image-size#da2c863807a3e9602617bdd357b0de3ab4a064c1",
-    "through2": "^0.6.3",
+    "readable-stream": "^1.0.33",
     "tryit": "^1.0.1"
   },
   "devDependencies": {

@@ -23,11 +23,7 @@ var imageSizeStream = createImageSizeStream()
   stream.destroy();
 });
 
-var stream = fs.createReadStream('path/to/foo.jpg')
-.pipe(imageSizeStream)
-.on('end', function() {
-  imageSizeStream.emit('finish');
-});
+var stream = fs.createReadStream('path/to/foo.jpg').pipe(imageSizeStream);
 ```
 
 ## Installation
@@ -57,7 +53,7 @@ var createImageSizeStream = require('image-size-stream');
 
 ### createImageSizeStream([*option*])
 
-*option*: `Object`
+*option*: `Object`  
 Return: `Object` ([`stream.Transform`](https://nodejs.org/api/stream.html#stream_class_stream_transform))
 
 The stream tries to detect the image size and emits [`size`](#size) or [`error`](#error) event.
@@ -116,14 +112,10 @@ size
   throw err;
 });
 
-fileStream
-.pipe(size)
-.on('end', function() {
-  size.emit('finish');
-});
+fileStream.pipe(size);
 ```
 
-If you want to stop reading the rest of the image file at `size` event, call [fs.ReadStream.destroy()](https://github.com/joyent/node/blob/a5778cdf01425ae39cea80b62f9ec6740aec724a/lib/fs.js#L1587-L1594) or [fs.ReadStream.close()](https://github.com/joyent/node/blob/a5778cdf01425ae39cea80b62f9ec6740aec724a/lib/fs.js#L1597-L1620).
+If you want to stop reading the rest of the image file at `size` event, call [fs.ReadStream#destroy()](https://github.com/joyent/node/blob/ef4344311e19a4f73c031508252b21712b22fe8a/lib/fs.js#L1691-L1698) or [fs.ReadStream#close()](https://github.com/joyent/node/blob/ef4344311e19a4f73c031508252b21712b22fe8a/lib/fs.js#L1701-L1724).
 
 ### Read data via HTTP
 
@@ -142,11 +134,7 @@ size
 });
 
 var request = http.get('url/to/image.png', function(response) {
-  response
-  .pipe(size)
-  .on('end', function() {
-    size.emit('finish');
-  });
+  response.pipe(size);
 });
 ```
 
