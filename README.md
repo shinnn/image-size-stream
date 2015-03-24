@@ -1,13 +1,13 @@
 # image-size-stream 
 
-[![NPM version](https://img.shields.io/npm/v/image-size-stream.svg?style=flat)](https://www.npmjs.com/package/image-size-stream)
+[![NPM version](https://img.shields.io/npm/v/image-size-stream.svg)](https://www.npmjs.com/package/image-size-stream)
 [![Build Status](https://travis-ci.org/shinnn/image-size-stream.svg)](https://travis-ci.org/shinnn/image-size-stream)
 [![Build status](https://ci.appveyor.com/api/projects/status/y05fwx2rwnf1kdh6?svg=true)](https://ci.appveyor.com/project/ShinnosukeWatanabe/image-size-stream)
-[![Coverage Status](https://img.shields.io/coveralls/shinnn/image-size-stream.svg?style=flat)](https://coveralls.io/r/shinnn/image-size-stream)
-[![Dependency Status](https://img.shields.io/david/shinnn/image-size-stream.svg?style=flat&label=deps)](https://david-dm.org/shinnn/image-size-stream)
-[![devDependency Status](https://img.shields.io/david/dev/shinnn/image-size-stream.svg?style=flat&label=devDeps)](https://david-dm.org/shinnn/image-size-stream#info=devDependencies)
+[![Coverage Status](https://img.shields.io/coveralls/shinnn/image-size-stream.svg)](https://coveralls.io/r/shinnn/image-size-stream)
+[![Dependency Status](https://img.shields.io/david/shinnn/image-size-stream.svg?label=deps)](https://david-dm.org/shinnn/image-size-stream)
+[![devDependency Status](https://img.shields.io/david/dev/shinnn/image-size-stream.svg?label=devDeps)](https://david-dm.org/shinnn/image-size-stream#info=devDependencies)
 
-Detect the width and height of images in a [stream](http://nodejs.org/api/stream.html)
+Detect the width and height of images in a [stream](https://nodejs.org/api/stream.html)
 
 ```javascript
 //       +-----------+
@@ -24,7 +24,10 @@ var imageSizeStream = createImageSizeStream()
 });
 
 var stream = fs.createReadStream('path/to/foo.jpg')
-.pipe(imageSizeStream);
+.pipe(imageSizeStream)
+.on('end', function() {
+  imageSizeStream.emit('finish');
+});
 ```
 
 ## Installation
@@ -37,21 +40,25 @@ npm install --save image-size-stream
 
 ## Supported image formats
 
-* [BMP](http://wikipedia.org/wiki/BMP_file_format)
-* [GIF](http://wikipedia.org/wiki/Graphics_Interchange_Format)
-* [JPEG](http://wikipedia.org/wiki/JPEG)
-* [PNG](http://wikipedia.org/wiki/Portable_Network_Graphics)
-* [PSD](http://wikipedia.org/wiki/Adobe_Photoshop#File_format)
-* [SVG](http://wikipedia.org/wiki/Scalable_Vector_Graphics)
-* [TIFF](http://wikipedia.org/wiki/Tagged_Image_File_Format)
-* [WebP](http://wikipedia.org/wiki/WebP)
+* [BMP](https://wikipedia.org/wiki/BMP_file_format)
+* [GIF](https://wikipedia.org/wiki/Graphics_Interchange_Format)
+* [JPEG](https://wikipedia.org/wiki/JPEG)
+* [PNG](https://wikipedia.org/wiki/Portable_Network_Graphics)
+* [PSD](https://wikipedia.org/wiki/Adobe_Photoshop#File_format)
+* [SVG](https://wikipedia.org/wiki/Scalable_Vector_Graphics)
+* [TIFF](https://wikipedia.org/wiki/Tagged_Image_File_Format)
+* [WebP](https://wikipedia.org/wiki/WebP)
  
 ## API
+
+```javascript
+var createImageSizeStream = require('image-size-stream');
+```
 
 ### createImageSizeStream([*option*])
 
 *option*: `Object`
-Return: `Object` ([`stream.Transform`](http://nodejs.org/api/stream.html#stream_class_stream_transform))
+Return: `Object` ([`stream.Transform`](https://nodejs.org/api/stream.html#stream_class_stream_transform))
 
 The stream tries to detect the image size and emits [`size`](#size) or [`error`](#error) event.
 
@@ -109,7 +116,11 @@ size
   throw err;
 });
 
-fileStream.pipe(size);
+fileStream
+.pipe(size)
+.on('end', function() {
+  size.emit('finish');
+});
 ```
 
 If you want to stop reading the rest of the image file at `size` event, call [fs.ReadStream.destroy()](https://github.com/joyent/node/blob/a5778cdf01425ae39cea80b62f9ec6740aec724a/lib/fs.js#L1587-L1594) or [fs.ReadStream.close()](https://github.com/joyent/node/blob/a5778cdf01425ae39cea80b62f9ec6740aec724a/lib/fs.js#L1597-L1620).
@@ -131,14 +142,18 @@ size
 });
 
 var request = http.get('url/to/image.png', function(response) {
-  response.pipe(size);
+  response
+  .pipe(size)
+  .on('end', function() {
+    size.emit('finish');
+  });
 });
 ```
 
-If you want to stop loading the rest of the image file at `size` event, call [request.abort()](http://nodejs.org/api/http.html#http_request_abort).
+If you want to stop loading the rest of the image file at `size` event, call [request.abort()](https://nodejs.org/api/http.html#http_request_abort).
 
 ## License
 
-Copyright (c) 2014 [Shinnosuke Watanabe](https://github.com/shinnn)
+Copyright (c) 2014 - 2015 [Shinnosuke Watanabe](https://github.com/shinnn)
 
 Licensed under [the MIT License](./LICENSE).
