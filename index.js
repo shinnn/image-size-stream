@@ -24,12 +24,14 @@ module.exports = function createImageSizeStream(option) {
   }
 
   var buffer = new Buffer(0);
+  var len = 0;
   var dimensions;
   var detectionError;
 
   return through(function detectImageSize(chunk, enc, cb) {
     if (!dimensions) {
-      buffer = Buffer.concat([buffer, chunk]);
+      len += chunk.length;
+      buffer = Buffer.concat([buffer, chunk], len);
 
       tryit(function() {
         dimensions = imageSize(buffer);
