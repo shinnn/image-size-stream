@@ -14,13 +14,12 @@
     }
   ],
   "files": [
-    "index.js",
-    "LICENSE"
+    "index.js"
   ],
   "scripts": {
     "pretest": "jscs *.js test/test.js && eslint *.js test/test.js",
-    "test": "_mocha --timeout 7500",
-    "test-dot": "_mocha --reporter dot --timeout 7500",
+    "test": "mocha --timeout 7500",
+    "test-dot": "mocha --reporter dot --timeout 7500",
     "coverage": "istanbul cover --no-default-excludes -x=node_modules/** _mocha -- -t 7500",
     "coveralls": "${npm_package_scripts_coverage} && istanbul-coveralls"
   },
@@ -43,17 +42,17 @@
     "svg"
   ],
   "dependencies": {
-    "image-size": "^0.3.5",
+    "image-size": "netroy/image-size#da2c863807a3e9602617bdd357b0de3ab4a064c1",
     "through2": "^0.6.3",
     "tryit": "^1.0.1"
   },
   "devDependencies": {
-    "eslint": "^0.11.0",
-    "istanbul": "^0.3.5",
-    "istanbul-coveralls": "^1.0.1",
-    "jscs": "^1.9.0",
-    "mocha": "^2.1.0",
-    "run-parallel": "^1.0.0"
+    "eslint": "^0.17.1",
+    "istanbul": "^0.3.10",
+    "istanbul-coveralls": "^1.0.2",
+    "jscs": "^1.11.3",
+    "mocha": "^2.2.1",
+    "run-parallel": "^1.1.0"
   },
   "jscsConfig": {
     "preset": "google",
