@@ -42,7 +42,7 @@
     "svg"
   ],
   "dependencies": {
-    "image-size": "netroy/image-size#da2c863807a3e9602617bdd357b0de3ab4a064c1",
+    "image-size": "^0.4.0",
     "readable-stream": "^1.0.33",
     "tryit": "^1.0.1"
   },
