@@ -80,7 +80,7 @@ describe('imageSizeStream', function() {
         {
           width: 4000,
           height: 6000,
-           type: 'jpg'
+          type: 'jpg'
         }
       ]);
       done();
